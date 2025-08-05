@@ -6,7 +6,11 @@
 class Ray {
 public:
     Ray() : origin_{}, direction_{} {}
-    Ray(glm::vec3 origin, glm::vec3 direction) : origin_{origin}, direction_{direction} {}
+
+    Ray(const glm::vec3& origin, const glm::vec3& direction)
+        : origin_{origin}
+        , direction_{direction}
+    {}
 
     const glm::vec3 & origin() const noexcept { return origin_; }
     const glm::vec3 & direction() const noexcept { return direction_; }
