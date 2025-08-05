@@ -1,27 +1,47 @@
+#include <glm/glm.hpp>
 #include <iostream>
 
 #include "Ray.hpp"
 
-
 void write_color(std::ostream& out, const glm::vec3& color)
 {
-    auto r = color.x;
-    auto g = color.y;
-    auto b = color.z;
+    const auto& r = color.x;
+    const auto& g = color.y;
+    const auto& b = color.z;
 
-    int rbyte = static_cast<int>(255.99 * r);
-    int gbyte = static_cast<int>(255.99 * g);
-    int bbyte = static_cast<int>(255.99 * b);
-
+    const int rbyte = static_cast<int>(255.99 * r);
+    const int gbyte = static_cast<int>(255.99 * g);
+    const int bbyte = static_cast<int>(255.99 * b);
 
     out << rbyte << " " << gbyte << " " << bbyte << "\n";
 }
 
+bool is_hitting_sphere(const glm::vec3& center, float radius, const Ray& r)
+{
+    glm::vec3 oc = center - r.origin();
+
+    auto a = glm::dot(r.direction(), r.direction());
+
+    auto b = -2.0f * glm::dot(r.direction(), oc);
+
+    auto c = glm::dot(oc, oc) - radius * radius;
+
+    auto discriminant = b * b - 4.0f * a * c;
+
+    return (discriminant >= 0);
+}
+
 glm::vec3 ray_color(const Ray& r)
 {
-    glm::vec3 unit_direction = r.direction() / static_cast<float>(r.direction().length());
+    if (is_hitting_sphere(glm::vec3(0.0f, 0.0f, -1.0f), 0.5f, r)) {
+        return glm::vec3(1.0f, 0.0f, 0.0f);
+    }
 
-    auto a = 0.5f * (unit_direction.y + 1.0f);
+    const glm::vec3 dir = r.direction();
+
+    const glm::vec3 unit_direction = dir / static_cast<float>(dir.length());
+
+    const auto a = 0.5f * (unit_direction.y + 1.0f);
 
     return (1.0f - a) * glm::vec3(1.0f, 1.0f, 1.0f) + a * glm::vec3(0.5f, 0.7f, 1.0f); 
 }
